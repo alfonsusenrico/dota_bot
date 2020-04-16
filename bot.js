@@ -6,7 +6,7 @@ const sleep = require('sleep')
 let settings = { method: "Get" }
 
 client.on('ready', () => {
-	console.log("Connected ass " + client.user.tag)
+	console.log("Connected as " + client.user.tag)
 })
 
 client.on('message', (receivedMessage) => {
@@ -14,7 +14,12 @@ client.on('message', (receivedMessage) => {
 		return
 	}
 	if (receivedMessage.content.startsWith(".")) {
+		if(receivedMessage.content === ".") {
+			receivedMessage.channel.send("Command tidak dikenali, silahkan gunakan command '.help'")
+		}
+		else {
 		processCommand(receivedMessage)
+		}
 	}
 })
 
@@ -30,6 +35,9 @@ function processCommand(receivedMessage) {
 			console.log('Input = '+primaryCommand)
 			receivedMessage.channel.send("Input player id")
 			break;
+		case 'help':
+			receivedMessage.channel.send("Command yang tersedia:\n1. recent")
+			break;
 		default:
 			console.log('Input = '+primaryCommand)
 			let player_id = primaryCommand
@@ -37,7 +45,7 @@ function processCommand(receivedMessage) {
 			let match_url = "https://api.opendota.com/api/players/"+player_id+"/recentMatches"
  			let hero_url = "https://api.opendota.com/api/heroes"
  			process(receivedMessage,player_url,match_url,hero_url,settings)
-			break;	
+ 			break;	
 	}
 }
 
@@ -82,7 +90,6 @@ function getHero(receivedMessage,match_url,hero_url,settings) {
 				var id = obj[i]['id']
 				if (id+1 == hero_id) {
 					hero_name = obj[i+1]['localized_name']
-					console.log(hero_name)
 					receivedMessage.channel.send("Hero: "+hero_name)
 					break
 				}
@@ -91,4 +98,4 @@ function getHero(receivedMessage,match_url,hero_url,settings) {
 
 }
 
-client.login("ISI_TOKEN_BOT_DISCORD")
+client.login("ISI TOKEN BOT DISCORD")
