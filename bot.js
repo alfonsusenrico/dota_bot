@@ -1,7 +1,7 @@
 const Discord = require('discord.js')
 const client = new Discord.Client()
 const req = require('node-fetch')
-const sleep = require('sleep')
+const fs = require('fs')
 
 let settings = { method: "Get" }
 
@@ -44,12 +44,23 @@ function processCommand(receivedMessage) {
 			let player_url = "https://api.opendota.com/api/players/"+player_id
 			let match_url = "https://api.opendota.com/api/players/"+player_id+"/recentMatches"
  			let hero_url = "https://api.opendota.com/api/heroes"
- 			process(receivedMessage,player_url,match_url,hero_url,settings)
+ 			process(receivedMessage,player_url,match_url,hero_url,player_id,settings)
  			break;	
 	}
 }
 
-function process(receivedMessage,player_url,match_url,hero_url,settings) {
+function process(receivedMessage,player_url,match_url,hero_url,player_id,settings) {
+
+	getPlayer(receivedMessage,player_url,settings)
+
+	getHero(receivedMessage,match_url,hero_url,settings)
+
+	getMatch(receivedMessage,match_url,player_id,settings)
+
+
+}
+
+function getPlayer(receivedMessage,player_url,settings) {
 
 	req(player_url, settings)
 		.then(res => res.json())
@@ -57,18 +68,53 @@ function process(receivedMessage,player_url,match_url,hero_url,settings) {
 			var string = JSON.stringify(json)
 			var obj = JSON.parse(string)
 			receivedMessage.channel.send("Account Name: "+obj['profile']['personaname']+"\nMMR Estimate: "+obj['mmr_estimate']['estimate'])
+		
 		})
+}
 
+function getMatch(receivedMessage,match_url,player_id,settings) {
+	var m_id
 	req(match_url, settings)
 		.then(res => res.json())
 		.then((json) => {
 			var string = JSON.stringify(json)
 			var obj = JSON.parse(string)
+			m_id = obj['0']['match_id']
 			receivedMessage.channel.send("Recent Match Id: "+obj['0']['match_id']+"\nKill: "+obj['0']['kills']+"\nDeaths: "+obj['0']['deaths']+"\nAssists: "+obj['0']['assists']+"\nLast hits: "+obj['0']['last_hits'])
-		})
 
-	getHero(receivedMessage,match_url,hero_url,settings)
-}
+			let item_url = "https://api.opendota.com/api/matches/"+m_id
+			let name_url = "http://jsonviewer.stack.hu/#https://raw.githubusercontent.com/joshuaduffy/dota2api/master/dota2api/ref/items.json"
+
+			req(item_url, settings)
+				.then(rs => rs.json())
+				.then((jsn) => {
+					var string1 = JSON.stringify(jsn)
+					var obj1 = JSON.parse(string1)
+					for(var i = 0;i<10;i++) {
+						if(obj1['players'][i]['account_id'] == player_id) {
+
+							var item1 = obj1['players'][i]['item0']
+							var item2 = obj1['players'][i]['item1']
+							var item3 = obj1['players'][i]['item2']
+							var item4 = obj1['players'][i]['item3']
+							var item5 = obj1['players'][i]['item4']
+							var item6 = obj1['players'][i]['item5']
+							var bp1 = obj1['players'][i]['backpack_0']
+							var bp2 = obj1['players'][i]['backpack_1']
+							var bp3 = obj1['players'][i]['backpack_2']
+
+							fs.readFile('items.json', (err, data) => {
+							if(err) throw err
+							let item = JSON.parse(data)
+							})
+
+							receivedMessage.channel.send("Item 1: "+obj1['players'][i]['item_0']+"\nItem 2: "+obj1['players'][i]['item_1']+"\nItem 3: "+obj1['players'][i]['item_2']+"\nItem 4: "+obj1['players'][i]['item_3']+"\nItem 5: "+obj1['players'][i]['item_4']+"\nItem 6: "+obj1['players'][i]['item_5'])
+							receivedMessage.channel.send("Backpack Item 1: "+obj1['players'][i]['backpack_0']+"\nBackpack Item 2: "+obj1['players'][i]['backpack_1']+"\nBackpack Item 3: "+obj1['players'][i]['backpack_2'])
+						}
+					}
+				})
+			})
+		}
 
 function getHero(receivedMessage,match_url,hero_url,settings) {
 
@@ -98,4 +144,16 @@ function getHero(receivedMessage,match_url,hero_url,settings) {
 
 }
 
-client.login("ISI TOKEN BOT DISCORD")
+
+function sleep(milliseconds) { 
+    let timeStart = new Date().getTime(); 
+    while (true) { 
+      let elapsedTime = new Date().getTime() - timeStart; 
+      if (elapsedTime > milliseconds) { 
+        break; 
+      } 
+    } 
+} 
+
+
+client.login("")
