@@ -91,4 +91,4 @@ function getHero(receivedMessage,match_url,hero_url,settings) {
 
 }
 
-client.login("Njk5OTgzNjcyNTA1NTMyNDY3.XpgKbg.Ok1M67Ef38tzi40fUk1NO6xazag")
+client.login("ISI_TOKEN_BOT_DISCORD")
