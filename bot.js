@@ -115,12 +115,18 @@ function getMatch(receivedMessage,match_url,player_id,settings) {
 							bp2 = obj1['players'][i]['backpack_1']
 							bp3 = obj1['players'][i]['backpack_2']
 							if(obj1['players'][i]['win'] == 1) {
-								var win = 'Yes'
+								var win = 'Win'
 							}
 							else {
 								var win = 'Lose'
 							}
-							receivedMessage.channel.send("Recent Match Id: "+obj1['match_id']+"\nCondition: "+win+"\nKill: "+obj1['players'][i]['kills']+"\nDeaths: "+obj1['players'][i]['deaths']+"\nAssists: "+obj1['players'][i]['assists']+"\nLast hits: "+obj1['players'][i]['last_hits']+"\nDenies: "+obj1['players'][i]['denies']+"\nGPM: "+obj1['players'][i]['gold_per_min']+"\nXPM: "+obj1['players'][i]['benchmarks']['xp_per_min']['raw'])
+							if(obj1['players'][i]['isRadiant'] == true) {
+								var team = 'Radiant'
+							}
+							else {
+								var team = 'Dire'
+							}
+							receivedMessage.channel.send("Recent Match Id: "+obj1['match_id']+"\nTeam: "+team+"\nCondition: "+win+"\nKill: "+obj1['players'][i]['kills']+"\nDeaths: "+obj1['players'][i]['deaths']+"\nAssists: "+obj1['players'][i]['assists']+"\nLast hits: "+obj1['players'][i]['last_hits']+"\nDenies: "+obj1['players'][i]['denies']+"\nGPM: "+obj1['players'][i]['gold_per_min']+"\nXPM: "+obj1['players'][i]['benchmarks']['xp_per_min']['raw'])
 
 							var party_size = obj1['players'][i]['party_size']
 							var party_id = obj1['players'][i]['party_id']
@@ -222,20 +228,31 @@ function getHero(receivedMessage,match_url,hero_url,settings) {
 			var string = JSON.stringify(json)
 			var obj = JSON.parse(string)
 			hero_id = obj['0']['hero_id']
+			console.log("hero_id = "+hero_id)
 		})
 	req(hero_url, settings)
 		.then(res => res.json())
 		.then((json) => {
 			var string = JSON.stringify(json)
 			var obj = JSON.parse(string)
-			for(var i = 0;i<=118;i++) {
-				var id = obj[i]['id']
-				if (id+1 == hero_id) {
-					hero_name = obj[i+1]['localized_name']
-					receivedMessage.channel.send("Hero: "+hero_name)
+			var i = 0;
+			while(true) {
+				if(obj[i]['id'] == undefined) {
+					i++
+				}
+				else {
+					var id = obj[i]['id']
+				}
+				if (id == hero_id) {
+					console.log("id: "+id)
+					hero_name = obj[i]['localized_name']
 					break
 				}
+				else {
+					i++
+				}
 			}
+			receivedMessage.channel.send("Hero: "+hero_name)
 		})
 
 }
