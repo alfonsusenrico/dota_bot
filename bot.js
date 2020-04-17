@@ -15,7 +15,7 @@ client.on('message', (receivedMessage) => {
 	}
 	if (receivedMessage.content.startsWith(".")) {
 		if(receivedMessage.content === ".") {
-			receivedMessage.channel.send("Command tidak dikenali, silahkan gunakan command '.help'")
+			receivedMessage.channel.send("Silahkan gunakan command '.help'")
 		}
 		else {
 		processCommand(receivedMessage)
@@ -36,16 +36,22 @@ function processCommand(receivedMessage) {
 			receivedMessage.channel.send("Input player id")
 			break;
 		case 'help':
-			receivedMessage.channel.send("Command yang tersedia:\n1. recent")
+			receivedMessage.channel.send("Command yang tersedia:\n1. recent\n2. help")
 			break;
 		default:
+
+			if(isNaN(primaryCommand) == false) {
 			console.log('Input = '+primaryCommand)
 			let player_id = primaryCommand
 			let player_url = "https://api.opendota.com/api/players/"+player_id
 			let match_url = "https://api.opendota.com/api/players/"+player_id+"/recentMatches"
  			let hero_url = "https://api.opendota.com/api/heroes"
- 			process(receivedMessage,player_url,match_url,hero_url,player_id,settings)
- 			break;	
+ 			process(receivedMessage,player_url,match_url,hero_url,player_id,settings)	
+ 			}
+ 			else {
+ 				receivedMessage.channel.send("Command tidak dikenali, silahkan gunakan command '.help'")
+ 			}
+ 			break;
 	}
 }
 
