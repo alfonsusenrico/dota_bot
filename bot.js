@@ -60,7 +60,7 @@ function process(receivedMessage,player_url,match_url,hero_url,player_id,setting
 	getPlayer(receivedMessage,player_url,settings)
 
 	getHero(receivedMessage,match_url,hero_url,settings)
-
+	
 	getMatch(receivedMessage,match_url,player_id,settings)
 
 
@@ -74,7 +74,6 @@ function getPlayer(receivedMessage,player_url,settings) {
 			var string = JSON.stringify(json)
 			var obj = JSON.parse(string)
 			receivedMessage.channel.send("Account Name: "+obj['profile']['personaname']+"\nMMR Estimate: "+obj['mmr_estimate']['estimate'])
-		
 		})
 }
 
@@ -121,8 +120,30 @@ function getMatch(receivedMessage,match_url,player_id,settings) {
 							else {
 								var win = 'Lose'
 							}
-							receivedMessage.channel.send("Recent Match Id: "+obj1['match_id']+"\nWin: "+win+"\nKill: "+obj1['players'][i]['kills']+"\nDeaths: "+obj1['players'][i]['deaths']+"\nAssists: "+obj1['players'][i]['assists']+"\nLast hits: "+obj1['players'][i]['last_hits']+"\nDenies: "+obj1['players'][i]['denies']+"\nGPM: "+obj1['players'][i]['gold_per_min']+"\nXPM: "+obj1['players'][i]['benchmarks']['xp_per_min']['raw'])
+							receivedMessage.channel.send("Recent Match Id: "+obj1['match_id']+"\nCondition: "+win+"\nKill: "+obj1['players'][i]['kills']+"\nDeaths: "+obj1['players'][i]['deaths']+"\nAssists: "+obj1['players'][i]['assists']+"\nLast hits: "+obj1['players'][i]['last_hits']+"\nDenies: "+obj1['players'][i]['denies']+"\nGPM: "+obj1['players'][i]['gold_per_min']+"\nXPM: "+obj1['players'][i]['benchmarks']['xp_per_min']['raw'])
 
+							var party_size = obj1['players'][i]['party_size']
+							var party_id = obj1['players'][i]['party_id']
+
+							if(party_size > 1) { 
+								if(i < 5) {
+									for(var j = 0;j<5;j++) {
+										if(obj1['players'][j]['party_id'] == party_id) {
+											receivedMessage.channel.send("Party: "+obj1['players'][j]['personaname'])
+										}
+									}
+								}
+								else {
+									for(var j = 5;j<10;j++) {
+										if(obj1['players'][j]['party_id'] == party_id) {
+											receivedMessage.channel.send("Party: "+obj1['players'][j]['personaname'])
+										}
+									}
+								}
+							}
+							else {
+								receivedMessage.channel.send("Solo Match")
+							}
 							break;
 						}
 					}
