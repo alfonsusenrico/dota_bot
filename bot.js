@@ -88,30 +88,81 @@ function getMatch(receivedMessage,match_url,player_id,settings) {
 			req(item_url, settings)
 				.then(rs => rs.json())
 				.then((jsn) => {
+					var item1
+					var item2
+					var item3
+					var item4
+					var item5
+					var item6
+					var bp1
+					var bp2
+					var bp3
 					var string1 = JSON.stringify(jsn)
 					var obj1 = JSON.parse(string1)
 					for(var i = 0;i<10;i++) {
 						if(obj1['players'][i]['account_id'] == player_id) {
-
-							var item1 = obj1['players'][i]['item0']
-							var item2 = obj1['players'][i]['item1']
-							var item3 = obj1['players'][i]['item2']
-							var item4 = obj1['players'][i]['item3']
-							var item5 = obj1['players'][i]['item4']
-							var item6 = obj1['players'][i]['item5']
-							var bp1 = obj1['players'][i]['backpack_0']
-							var bp2 = obj1['players'][i]['backpack_1']
-							var bp3 = obj1['players'][i]['backpack_2']
-
-							fs.readFile('items.json', (err, data) => {
-							if(err) throw err
-							let item = JSON.parse(data)
-							})
-
-							receivedMessage.channel.send("Item 1: "+obj1['players'][i]['item_0']+"\nItem 2: "+obj1['players'][i]['item_1']+"\nItem 3: "+obj1['players'][i]['item_2']+"\nItem 4: "+obj1['players'][i]['item_3']+"\nItem 5: "+obj1['players'][i]['item_4']+"\nItem 6: "+obj1['players'][i]['item_5'])
-							receivedMessage.channel.send("Backpack Item 1: "+obj1['players'][i]['backpack_0']+"\nBackpack Item 2: "+obj1['players'][i]['backpack_1']+"\nBackpack Item 3: "+obj1['players'][i]['backpack_2'])
+							item1 = obj1['players'][i]['item_0']
+							item2 = obj1['players'][i]['item_1']
+							item3 = obj1['players'][i]['item_2']
+							item4 = obj1['players'][i]['item_3']
+							item5 = obj1['players'][i]['item_4']
+							item6 = obj1['players'][i]['item_5']
+							bp1 = obj1['players'][i]['backpack_0']
+							bp2 = obj1['players'][i]['backpack_1']
+							bp3 = obj1['players'][i]['backpack_2']
+							break;
 						}
 					}
+					fs.readFile('items.json', (err, data) => {
+						if(err) throw err
+						let item = JSON.parse(data)
+						var co = 0;
+						for(var i = 0;i<268;i++) {
+							switch(item['items'][i]['id']) {
+								case (item1):
+									item1 = item['items'][i]['localized_name']
+									co++
+									break
+								case (item2):
+									item2 = item['items'][i]['localized_name']
+									co++
+									break
+								case (item3):
+									item3 = item['items'][i]['localized_name']
+									co++
+									break
+								case (item4):
+									item4 = item['items'][i]['localized_name']
+									co++
+									break
+								case (item5):
+									item5 = item['items'][i]['localized_name']
+									co++
+									break
+								case (item6):
+									item6 = item['items'][i]['localized_name']
+									co++
+									break
+								case (bp1):
+									bp1 = item['items'][i]['localized_name']
+									co++
+									break
+								case (bp2):
+									bp2 = item['items'][i]['localized_name']
+									co++
+									break
+								case (bp3):
+									bp3 = item['items'][i]['localized_name']
+									co++
+									break
+							}
+							if(co == 9) {
+								break
+							}
+						}
+						receivedMessage.channel.send("Item 1: "+item1+"\nItem 2: "+item2+"\nItem 3: "+item3+"\nItem 4: "+item4+"\nItem 5: "+item5+"\nItem 6: "+item6)
+						receivedMessage.channel.send("Backpack Item 1: "+bp1+"\nBackpack Item 2: "+bp2+"\nBackpack Item 3: "+bp3)
+					})
 				})
 			})
 		}
