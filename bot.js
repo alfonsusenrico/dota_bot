@@ -80,7 +80,6 @@ function getMatch(receivedMessage,match_url,player_id,settings) {
 			var string = JSON.stringify(json)
 			var obj = JSON.parse(string)
 			m_id = obj['0']['match_id']
-			receivedMessage.channel.send("Recent Match Id: "+obj['0']['match_id']+"\nKill: "+obj['0']['kills']+"\nDeaths: "+obj['0']['deaths']+"\nAssists: "+obj['0']['assists']+"\nLast hits: "+obj['0']['last_hits'])
 
 			let item_url = "https://api.opendota.com/api/matches/"+m_id
 			let name_url = "http://jsonviewer.stack.hu/#https://raw.githubusercontent.com/joshuaduffy/dota2api/master/dota2api/ref/items.json"
@@ -110,6 +109,14 @@ function getMatch(receivedMessage,match_url,player_id,settings) {
 							bp1 = obj1['players'][i]['backpack_0']
 							bp2 = obj1['players'][i]['backpack_1']
 							bp3 = obj1['players'][i]['backpack_2']
+							if(obj1['players'][i]['win'] == 1) {
+								var win = 'Yes'
+							}
+							else {
+								var win = 'Lose'
+							}
+							receivedMessage.channel.send("Recent Match Id: "+obj1['match_id']+"\nWin: "+win+"\nKill: "+obj1['players'][i]['kills']+"\nDeaths: "+obj1['players'][i]['deaths']+"\nAssists: "+obj1['players'][i]['assists']+"\nLast hits: "+obj1['players'][i]['last_hits']+"\nDenies: "+obj1['players'][i]['denies']+"\nGPM: "+obj1['players'][i]['gold_per_min']+"\nXPM: "+obj1['players'][i]['benchmarks']['xp_per_min']['raw'])
+
 							break;
 						}
 					}
@@ -117,49 +124,60 @@ function getMatch(receivedMessage,match_url,player_id,settings) {
 						if(err) throw err
 						let item = JSON.parse(data)
 						var co = 0;
-						for(var i = 0;i<268;i++) {
+						var i = 0;
+						while (co != 9) {
 							switch(item['items'][i]['id']) {
 								case (item1):
 									item1 = item['items'][i]['localized_name']
 									co++
+									i = 0;
 									break
 								case (item2):
 									item2 = item['items'][i]['localized_name']
 									co++
+									i = 0;
 									break
 								case (item3):
 									item3 = item['items'][i]['localized_name']
 									co++
+									i = 0;
 									break
 								case (item4):
 									item4 = item['items'][i]['localized_name']
 									co++
+									i = 0;
 									break
 								case (item5):
 									item5 = item['items'][i]['localized_name']
 									co++
+									i = 0;
 									break
 								case (item6):
 									item6 = item['items'][i]['localized_name']
 									co++
+									i = 0;
 									break
 								case (bp1):
 									bp1 = item['items'][i]['localized_name']
 									co++
+									i = 0;
 									break
 								case (bp2):
 									bp2 = item['items'][i]['localized_name']
 									co++
+									i = 0;
 									break
 								case (bp3):
 									bp3 = item['items'][i]['localized_name']
 									co++
+									i = 0;
 									break
-							}
-							if(co == 9) {
-								break
+								default:
+									i++
+									break;
 							}
 						}
+
 						receivedMessage.channel.send("Item 1: "+item1+"\nItem 2: "+item2+"\nItem 3: "+item3+"\nItem 4: "+item4+"\nItem 5: "+item5+"\nItem 6: "+item6)
 						receivedMessage.channel.send("Backpack Item 1: "+bp1+"\nBackpack Item 2: "+bp2+"\nBackpack Item 3: "+bp3)
 					})
